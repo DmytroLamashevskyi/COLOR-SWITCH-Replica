@@ -8,14 +8,15 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Player : MonoBehaviour
 {
+    public float MaxPosition;
+
     [SerializeField]
     private int JumpForce;
 
     private ElementId CurentId;
     private Rigidbody2D rigidbody;
     private SpriteRenderer sprite;
-
-
+     
 
     // Start is called before the first frame update
     void Start()
@@ -31,8 +32,7 @@ public class Player : MonoBehaviour
         Array values = Enum.GetValues(typeof(ElementId));
         System.Random random = new System.Random();
         CurentId = (ElementId)values.GetValue(random.Next(values.Length));
-        sprite.color = InitColors.Instance.GetColor(CurentId);
-
+        sprite.color = InitColors.Instance.GetColor(CurentId); 
     }
 
     // Update is called once per frame
@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") || Input.GetMouseButtonDown(0))
         {
+            rigidbody.constraints &= ~RigidbodyConstraints2D.FreezePositionY;
             rigidbody.velocity = Vector2.up * JumpForce;
         } 
 
@@ -52,6 +53,11 @@ public class Player : MonoBehaviour
             rigidbody.velocity = Vector2.up * JumpForce;
         }
 
+        if(MaxPosition < transform.position.y)
+        {
+            MaxPosition = transform.position.y;
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -61,7 +67,7 @@ public class Player : MonoBehaviour
         {
             if (circleElement.Id != this.CurentId)
             {
-                Debug.Log("Game Over");
+                GameOver();
             } 
         }
 
@@ -71,6 +77,16 @@ public class Player : MonoBehaviour
             SetRandomColor();
             colorChanger.ColorChanged();
         }
+
+    }
+
+
+
+    public void GameOver()
+    {
+        Debug.Log("Game Over");
+
+
 
     }
 }

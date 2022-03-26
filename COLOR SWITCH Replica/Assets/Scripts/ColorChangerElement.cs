@@ -11,8 +11,7 @@ public class ColorChangerElement : MonoBehaviour
     void Start()
     {
         
-    }
-     
+    } 
 
     internal void ColorChanged()
     {
